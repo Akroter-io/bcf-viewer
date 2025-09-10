@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>BCF Viewer</title>
+	<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+	<link rel="shortcut icon" href="favicon.ico" />
+	<link rel="stylesheet" href="./styles/main.css">
+</head>
+
+<body>
+	<div class="container">
+		<header>
+			<h1>BCF Viewer</h1>
+			<p>Drag and drop a BCF file to view its contents</p>
+		</header>
+
+		<main>
+			<div id="drop-zone" class="drop-zone">
+				<div class="drop-zone-content">
+					<p>📁 Drop your BCF file here</p>
+					<p class="drop-zone-hint">or click to browse</p>
+				</div>
+			</div>
+
+			<div id="bcf-viewer" class="bcf-viewer"></div>
+		</main>
+	</div>
+</body>
+
+</html>
