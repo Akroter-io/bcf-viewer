@@ -4,9 +4,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = (env, argv) => {
-	const isProduction = argv.mode === 'production';
-	// Allow customization of public path via environment variable
-	const publicPath = process.env.PUBLIC_PATH || (isProduction ? '/bcf-viewer/' : '/');
 
 	return {
 		entry: './src/main.ts',
@@ -14,8 +11,7 @@ module.exports = (env, argv) => {
 			filename: 'bundle.js',
 			path: path.resolve(__dirname, 'dist'),
 			clean: true,
-			// Set public path - configurable via environment variable
-			publicPath: publicPath,
+			publicPath: '/bcf-viewer/',
 		},
 		resolve: {
 			extensions: ['.ts', '.js'],
