@@ -4,6 +4,11 @@ on:
   push:
     branches: [ main ]
 
+# Environment variables for deployment configuration
+env:
+  CUSTOM_DOMAIN: tools.akroter.io
+  SUBDIRECTORY: bcf-viewer
+
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
@@ -34,7 +39,10 @@ jobs:
         run: npm ci
 
       - name: Build application
-        run: npm run build
+        run: npm run deploy
+
+      - name: Create CNAME file for custom domain
+        run: echo "${{ env.CUSTOM_DOMAIN }}" > ./dist/CNAME
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

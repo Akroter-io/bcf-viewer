@@ -5,6 +5,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = (env, argv) => {
 	const isProduction = argv.mode === 'production';
+	// Allow customization of public path via environment variable
+	const publicPath = process.env.PUBLIC_PATH || (isProduction ? '/bcf-viewer/' : '/');
 
 	return {
 		entry: './src/main.ts',
@@ -12,8 +14,8 @@ module.exports = (env, argv) => {
 			filename: 'bundle.js',
 			path: path.resolve(__dirname, 'dist'),
 			clean: true,
-			// Set public path for GitHub Pages
-			publicPath: isProduction ? '/bcf-viewer/' : '/',
+			// Set public path - configurable via environment variable
+			publicPath: publicPath,
 		},
 		resolve: {
 			extensions: ['.ts', '.js'],
@@ -44,7 +46,7 @@ module.exports = (env, argv) => {
 				filename: 'index.html',
 				// Process favicon paths based on public path
 				templateParameters: {
-					publicPath: isProduction ? '/bcf-viewer/' : '/',
+					publicPath: publicPath,
 				},
 			}),
 			new CopyWebpackPlugin({
