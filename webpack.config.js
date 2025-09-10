@@ -4,6 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = (env, argv) => {
+	const publicPath = (isProduction ? '/bcf-viewer/' : '/');
 
 	return {
 		entry: './src/main.ts',
@@ -11,6 +12,7 @@ module.exports = (env, argv) => {
 			filename: 'bundle.js',
 			path: path.resolve(__dirname, 'dist'),
 			clean: true,
+			// Set public path - configurable via environment variable
 			publicPath: '/bcf-viewer/',
 		},
 		resolve: {
@@ -26,7 +28,7 @@ module.exports = (env, argv) => {
 				{
 					test: /\.css$/,
 					use: [
-						'style-loader',
+						isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
 						'css-loader'
 					],
 				},
@@ -56,7 +58,7 @@ module.exports = (env, argv) => {
 					},
 				],
 			}),
-			...(argv.mode === 'production' ? [
+			...(isProduction ? [
 				new MiniCssExtractPlugin({
 					filename: 'styles/main.css',
 				})
