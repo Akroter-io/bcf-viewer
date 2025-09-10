@@ -1,0 +1,40 @@
+{
+	"name": "bcf-viewer",
+	"version": "0.1.0",
+	"description": "A web application for viewing BCF files",
+	"homepage": "https://akroter-io.github.io/bcf-viewer",
+	"main": "dist/main.js",
+	"scripts": {
+		"build": "webpack --mode production",
+		"start": "webpack serve --mode development",
+		"dev": "webpack --mode development --watch",
+		"deploy": "npm run build"
+	},
+	"keywords": [
+		"BCF",
+		"BIM",
+		"issue",
+		"viewer",
+		"web"
+	],
+	"author": "Lucas Becker",
+	"license": "MIT",
+	"dependencies": {
+		"jszip": "^3.10.1",
+		"xml2js": "^0.6.2"
+	},
+	"devDependencies": {
+		"@types/jszip": "^3.4.1",
+		"@types/xml2js": "^0.4.14",
+		"copy-webpack-plugin": "^13.0.1",
+		"css-loader": "^6.8.1",
+		"html-webpack-plugin": "^5.5.3",
+		"mini-css-extract-plugin": "^2.9.4",
+		"style-loader": "^3.3.3",
+		"ts-loader": "^9.4.4",
+		"typescript": "^5.1.6",
+		"webpack": "^5.88.2",
+		"webpack-cli": "^5.1.4",
+		"webpack-dev-server": "^4.15.1"
+	}
+}
