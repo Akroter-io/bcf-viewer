@@ -2,6 +2,7 @@ import { BCFData, MarkupData, Comment } from '../types/bcf';
 import { ImageSlider } from './ImageSlider';
 import { parseBCFFile } from '../utils/bcfParser';
 import { formatDateTime } from '../utils/dateFormatter';
+import { getRelativeTime } from '../utils/relativeTime';
 
 export default class BCFViewer {
 	private container: HTMLElement;
@@ -65,15 +66,42 @@ export default class BCFViewer {
 
 		const detailsDiv = document.createElement('div');
 		detailsDiv.className = 'topic-details';
-		detailsDiv.innerHTML = `
-			<p><strong>Status:</strong> ${markup.Topic?.TopicStatus || 'Unknown'}</p>
-			<p><strong>Priority:</strong> ${markup.Topic?.Priority || 'Unknown'}</p>
-			<p><strong>Creation Date:</strong> ${markup.Topic?.CreationDate ? formatDateTime(markup.Topic.CreationDate) : 'Unknown'}</p>
-			<p><strong>Creation Author:</strong> ${markup.Topic?.CreationAuthor || 'Unknown'}</p>
-			${markup.Topic?.ModifiedDate ? `<p><strong>Modified Date:</strong> ${formatDateTime(markup.Topic.ModifiedDate)}</p>` : ''}
-			${markup.Topic?.ModifiedAuthor ? `<p><strong>Modified Author:</strong> ${markup.Topic.ModifiedAuthor}</p>` : ''}
-			${markup.Topic?.AssignedTo ? `<p><strong>Assigned To:</strong> ${markup.Topic.AssignedTo}</p>` : ''}
-		`;
+
+		const table = document.createElement('table');
+		table.className = 'topic-details-table';
+
+		// Create table rows for each detail
+		const details = [
+			{ label: 'Status', value: markup.Topic?.TopicStatus || 'Unknown', isDate: false, originalDate: null },
+			{ label: 'Priority', value: markup.Topic?.Priority || 'Unknown', isDate: false, originalDate: null },
+			{ label: 'Creation Date', value: markup.Topic?.CreationDate ? formatDateTime(markup.Topic.CreationDate) : 'Unknown', isDate: true, originalDate: markup.Topic?.CreationDate },
+			{ label: 'Creation Author', value: markup.Topic?.CreationAuthor || 'Unknown', isDate: false, originalDate: null }
+		];
+
+		// Add optional details if they exist
+		if (markup.Topic?.ModifiedDate) {
+			details.push({ label: 'Modified Date', value: formatDateTime(markup.Topic.ModifiedDate), isDate: true, originalDate: markup.Topic.ModifiedDate });
+		}
+		if (markup.Topic?.ModifiedAuthor) {
+			details.push({ label: 'Modified Author', value: markup.Topic.ModifiedAuthor, isDate: false, originalDate: null });
+		}
+		if (markup.Topic?.AssignedTo) {
+			details.push({ label: 'Assigned To', value: markup.Topic.AssignedTo, isDate: false, originalDate: null });
+		}
+
+		// Create table rows
+		details.forEach(detail => {
+			const row = document.createElement('tr');
+			const valueClass = detail.isDate ? 'detail-value detail-time' : 'detail-value';
+			const titleAttribute = detail.isDate && detail.originalDate ? ` title="${getRelativeTime(detail.originalDate)}"` : '';
+			row.innerHTML = `
+				<td class="detail-label"><strong>${detail.label}:</strong></td>
+				<td class="${valueClass}"${titleAttribute}>${detail.value}</td>
+			`;
+			table.appendChild(row);
+		});
+
+		detailsDiv.appendChild(table);
 		topicDiv.appendChild(detailsDiv);
 
 		// Add comments section only if there are comments
@@ -114,7 +142,6 @@ export default class BCFViewer {
 			const img = document.createElement('img');
 			img.src = imageUrl;
 			img.alt = `BCF Image ${index + 1}`;
-			img.style.cssText = 'max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px; display: block;';
 
 			img.onload = () => console.log('Image loaded:', imageUrl);
 			img.onerror = () => console.error('Failed to load image:', imageUrl);
@@ -149,9 +176,10 @@ export default class BCFViewer {
 
 			const commentHeader = document.createElement('div');
 			commentHeader.className = 'comment-header';
+			const dateTitle = comment.Date ? ` title="${getRelativeTime(comment.Date)}"` : '';
 			commentHeader.innerHTML = `
 				<strong>${comment.Author || 'Unknown Author'}</strong>
-				<span class="comment-date">${comment.Date ? formatDateTime(comment.Date) : 'Unknown Date'}</span>
+				<span class="comment-date detail-time"${dateTitle}>${comment.Date ? formatDateTime(comment.Date) : 'Unknown Date'}</span>
 			`;
 
 			const commentBody = document.createElement('div');
@@ -165,8 +193,9 @@ export default class BCFViewer {
 			if (comment.ModifiedDate && comment.ModifiedAuthor) {
 				const modificationInfo = document.createElement('div');
 				modificationInfo.className = 'comment-modification';
+				const modDateTitle = ` title="${getRelativeTime(comment.ModifiedDate)}"`;
 				modificationInfo.innerHTML = `
-					<small>Modified by <strong>${comment.ModifiedAuthor}</strong> on ${formatDateTime(comment.ModifiedDate)}</small>
+					<small>Modified by <strong>${comment.ModifiedAuthor}</strong> on <span class="detail-time"${modDateTitle}>${formatDateTime(comment.ModifiedDate)}</span></small>
 				`;
 				commentDiv.appendChild(modificationInfo);
 			}

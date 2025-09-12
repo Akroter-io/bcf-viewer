@@ -2,15 +2,13 @@
 	"name": "bcf-viewer",
 	"version": "0.1.0",
 	"description": "A web application for viewing BCF files",
-	"homepage": "https://tools.akroter.io/bcf-viewer",
+	"homepage": "https://bcf-viewer.tools.akroter.io",
 	"main": "dist/main.js",
 	"scripts": {
 		"build": "webpack --mode production",
-		"build:custom-domain": "PUBLIC_PATH=/bcf-viewer/ webpack --mode production",
-		"build:root": "PUBLIC_PATH=/ webpack --mode production",
 		"start": "webpack serve --mode development",
 		"dev": "webpack --mode development --watch",
-		"deploy": "npm run build:custom-domain"
+		"deploy": "npm run build"
 	},
 	"keywords": [
 		"BCF",

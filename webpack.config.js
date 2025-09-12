@@ -5,8 +5,11 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = (env, argv) => {
 	const isProduction = argv.mode === 'production';
-	// Allow customization of public path via environment variable
-	const publicPath = process.env.PUBLIC_PATH || (isProduction ? '/bcf-viewer/' : '/');
+	// Use root path for custom domain deployment
+	// see https://github.com/orgs/community/discussions/173106
+	// for discussion
+	// => currently it's not possible to deploy to a subpath with GH Pages
+	const publicPath = '/';
 
 	return {
 		entry: './src/main.ts',
